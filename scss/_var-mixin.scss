@@ -1,0 +1,21 @@
+$cor-preto: #000;
+$cor-branco: #FFF;
+$cor-1: #122ab2;
+$cor-2: #2C70FF;
+
+@mixin gutter {
+    padding: 10px;
+}
+
+@mixin centraliza {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+@mixin titulo {
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: bold;
+    padding-top: 60px;
+    padding-bottom: 60px;
+}

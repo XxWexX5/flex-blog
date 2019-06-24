@@ -1,0 +1,140 @@
+$colunas: 12;
+$gutter: 20px;
+$vDesktop: 1200px;
+$vTablet: 760px;
+$vMobile: 480px;
+$vMini: 450px;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+// Media Query
+@mixin device($device) {
+  @if($device == desktop){
+    @media only screen and (min-width: $vDesktop) {
+      @content;
+    }
+  }@else if($device == tablet){
+    @media only screen and (min-width: $vTablet) and (max-width: $vDesktop - 1) {
+      @content;
+    }
+  }@else if($device == mobile){
+    @media only screen and (max-width: $vTablet - 1) {
+      @content;
+    }
+  }@else if($device == mini){
+    @media only screen and (max-width: $vMini) {
+      @content;
+    }      
+  }
+}
+
+/*
+Exemplo de coluna pura:
+  .introducao {
+    coluna(6);
+  }
+*/
+
+// Função - coluna
+@function coluna($coluna, $offset: false) {
+  $width: (($coluna / $colunas) * 100) + %;
+  $result: calc(#{$width} - #{$gutter});
+  @if ($offset == offset) {
+    $gutter: ($gutter / 2);
+    $result: calc(#{$width} + #{$gutter});
+  }
+  @return $result;
+}
+
+// coluna
+@for $i from 1 through $colunas {
+  .coluna-#{$i} {
+    width: coluna($i);
+  }
+}
+
+// Estrutura do coluna
+
+@mixin coluna-estrutura {
+  float: left;
+  min-height: 1px;
+  margin-left: $gutter / 2;
+  margin-right: $gutter / 2;
+  @include device(mobile) {
+    width: 100%;
+    float: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+// Selector que acesso todas classes que começarem com 'coluna-'
+[class^="coluna-"] {
+  @include coluna-estrutura;
+}
+
+// offset
+@for $i from 1 through $colunas {
+  .offset-#{$i} {
+    margin-left: coluna($i, offset);
+    @extend %offset;
+  }
+}
+
+// Retirando o margin left no mobile
+@include device(mobile) {
+  %offset {
+    margin-left: 0;
+  }
+}
+
+// Mixin de clearfix
+@mixin clearfix {
+  &::before,
+  &::after {
+    content: '';
+    display: table;
+  }
+  &::after {
+    clear: both;
+  }
+}
+
+// Mixin container
+@mixin container {
+  max-width: $vDesktop;
+  margin: 0 auto;
+  position: relative;;
+  @include device(tablet) {
+    max-width: $vTablet;
+  }
+  @include device(mobile) {
+    max-width: $vMobile;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  @include clearfix;
+}
+
+@mixin linha {
+  margin-left: -$gutter / 2;
+  margin-right: -$gutter / 2;
+  position: relative;
+  @include device(mobile) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  @include clearfix;
+}
+
+.linha {
+  @include linha;
+}
+
+.container {
+  @include container;
+}
